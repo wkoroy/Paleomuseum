@@ -13,14 +13,52 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 public static  DrawerLayout mdrawer;
     static Context ctx;
+    static Paleotag [] tag_geochrones;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        String [] geochronestag = getString(R.string.paleochrono).split("#");
+        tag_geochrones = new Paleotag[geochronestag.length/2];
+
+
+        ///////////////// test DB
+        db_BookMark db = new db_BookMark(this);
+
+        /**
+         * CRUD Operations
+         * */
+        // add Books
+        db.addBook(new PaleoItem("Android Application Development Cookbook", "Wei Meng Lee" , "13232323" , "der3ere" , "wse"));
+        db.addBook(new PaleoItem("Android Programming: The Big Nerd Ranch Guide", "Bill Phillips and Brian Hardy" ,"23324","23324","23324"));
+        db.addBook(new PaleoItem("Learn Android App Development", "Wallace Jackson" , "#$#%4" , "23eds34wsd" , "DFRT$"));
+
+        // get all books
+        List<PaleoItem> list = db.getAllBooks();
+
+        // delete one book
+        db.deleteBook(list.get(0));
+
+        // get all books
+        db.getAllBooks();
+        //////////////////
+
+
+        for( int i=0 , k =0;i<geochronestag.length;i+=2)
+        {
+            tag_geochrones[k] = new Paleotag();
+            tag_geochrones[k].name = geochronestag[i];
+            tag_geochrones[k].tag = geochronestag[i+1];
+            k++;
+        }
 
         ctx = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
