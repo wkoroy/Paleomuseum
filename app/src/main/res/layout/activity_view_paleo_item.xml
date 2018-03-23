@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/side_nav_bar"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:weightSum="10"
+    tools:context="com.androidhunger.navigationdrawerexample.ru.androidhunger.navigationdrawerexample.ViewPaleoItem">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="top"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/vp_imgload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_margin="150dp"
+            android:src="@drawable/ammonite512"
+            android:translationZ="4dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.github.chrisbanes.photoview.PhotoView
+                android:id="@+id/vp_img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@android:drawable/picture_frame"
+                android:src="@android:drawable/stat_sys_download_done"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/imgloading"
+                tools:layout_editor_absoluteX="198dp" />
+
+            <TextView
+                android:id="@+id/vp_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="3dp"
+                android:layout_weight="4"
+                android:autoLink="web"
+                android:scrollbars="vertical"
+                android:text="TextView-------------"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:layout_editor_absoluteX="206dp" />
+        </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>

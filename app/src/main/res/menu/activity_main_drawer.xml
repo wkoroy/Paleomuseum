@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/home"
+            android:icon="@drawable/ic_gallery"
+            android:title="Фото, по дате добавления" />
+        <item
+            android:id="@+id/photo_by_popular"
+            android:icon="@drawable/ic_gallery_pop"
+            android:title="Фото, по рейтингу" />
+
+        <item
+            android:id="@+id/articles"
+            android:icon="@drawable/ic_articles"
+            android:title="Публикации" />
+        <item
+            android:id="@+id/paleonews"
+            android:icon="@drawable/ic_news"
+            android:title="Новости палеонтологии" />
+
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/ic_info"
+            android:title="О приложении ..." />
+
+    </group>
+
+
+</menu>
