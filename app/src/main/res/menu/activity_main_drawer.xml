@@ -10,6 +10,10 @@
             android:id="@+id/photo_by_popular"
             android:icon="@drawable/ic_gallery_pop"
             android:title="Фото, по рейтингу" />
+        <item
+            android:id="@+id/photo_by_geochrones"
+            android:icon="@drawable/ic_gallery_pop"
+            android:title="По геохронологической шкале " />
 
         <item
             android:id="@+id/articles"
