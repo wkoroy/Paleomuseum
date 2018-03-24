@@ -91,9 +91,12 @@ public class GalleryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 b_prev.startAnimation(sunRiseAnimation);
-                if(pnum >1)pnum --;
+                if(pnum >1){
+                    pnum --;
+                    (new Imgitems_getter()).execute(url+pnum);
+                }
 
-                (new Imgitems_getter()).execute(url+pnum);
+
             }
         });
 
@@ -101,9 +104,11 @@ public class GalleryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 b_next.startAnimation(sunRiseAnimation);
-                pnum++;
-
-                (new Imgitems_getter()).execute(url+pnum);
+                if(pnum < max_page)
+                {
+                    pnum++;
+                   (new Imgitems_getter()).execute(url+pnum);
+                }
             }
         });
 
