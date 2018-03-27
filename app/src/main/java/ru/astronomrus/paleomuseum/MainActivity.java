@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,17 +26,17 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-public static  DrawerLayout mdrawer;
+    public static DrawerLayout mdrawer;
     static Context ctx;
-    static Paleotag [] tag_geochrones;
-
+    static Paleotag[] tag_geochrones;
+    GalleryFragment galleryFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String [] geochronestag = getString(R.string.paleochrono).split("#");
-        tag_geochrones = new Paleotag[geochronestag.length/2];
+        String[] geochronestag = getString(R.string.paleochrono).split("#");
+        tag_geochrones = new Paleotag[geochronestag.length / 2];
 
 
         ///////////////// test DB
@@ -45,9 +46,9 @@ public static  DrawerLayout mdrawer;
          * CRUD Operations
          * */
         // add Books
-        db.addBook(new PaleoItem("Android Application Development Cookbook", "Wei Meng Lee" , "13232323" , "der3ere" , "wse"));
-        db.addBook(new PaleoItem("Android Programming: The Big Nerd Ranch Guide", "Bill Phillips and Brian Hardy" ,"23324","23324","23324"));
-        db.addBook(new PaleoItem("Learn Android App Development", "Wallace Jackson" , "#$#%4" , "23eds34wsd" , "DFRT$"));
+        db.addBook(new PaleoItem("Android Application Development Cookbook", "Wei Meng Lee", "13232323", "der3ere", "wse"));
+        db.addBook(new PaleoItem("Android Programming: The Big Nerd Ranch Guide", "Bill Phillips and Brian Hardy", "23324", "23324", "23324"));
+        db.addBook(new PaleoItem("Learn Android App Development", "Wallace Jackson", "#$#%4", "23eds34wsd", "DFRT$"));
 
         // get all books
         List<PaleoItem> list = db.getAllBooks();
@@ -60,20 +61,21 @@ public static  DrawerLayout mdrawer;
         //////////////////
 
 
-        for( int i=0 , k =0;i<geochronestag.length;i+=2)
-        {
+        for (int i = 0, k = 0; i < geochronestag.length; i += 2) {
             tag_geochrones[k] = new Paleotag();
             tag_geochrones[k].name = geochronestag[i];
-            tag_geochrones[k].tag = geochronestag[i+1];
+            tag_geochrones[k].tag = geochronestag[i + 1];
             k++;
         }
 
         ctx = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-         mdrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mdrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         setSupportActionBar(toolbar);
         if (savedInstanceState == null) {
-            Fragment newFragment = new GalleryFragment();
+
+            galleryFragment = new GalleryFragment();;
+            Fragment newFragment= galleryFragment;
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.add(R.id.content_frame, newFragment);
             ft.addToBackStack(null);
@@ -91,7 +93,7 @@ public static  DrawerLayout mdrawer;
 
     @Override
     public void onBackPressed() {
-        Log.d("BACK" ,"");
+        Log.d("BACK", "");
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -107,28 +109,27 @@ public static  DrawerLayout mdrawer;
         int id = item.getItemId();
         Fragment fragment = null;
         Bundle bundle = new Bundle();
-        if (id == R.id.home)
-        {
+        if (id == R.id.home) {
             bundle.putString(GalleryFragment.BKEY_URL, "https://www.ammonit.ru/newfoto/");
-            fragment = new GalleryFragment();
+            galleryFragment = new GalleryFragment();;
+            fragment = galleryFragment;
             fragment.setArguments(bundle);
-        } else if (id == R.id.photo_by_popular)
-        {
+        } else if (id == R.id.photo_by_popular) {
             bundle.putString(GalleryFragment.BKEY_URL, "https://www.ammonit.ru/popfoto/");
-            fragment = new GalleryFragment();
+            galleryFragment = new GalleryFragment();;
+            fragment = galleryFragment;
             fragment.setArguments(bundle);
         } else if (id == R.id.about) {
             fragment = new AboutFragment();
         } else if (id == R.id.articles) {
-        bundle.putString("url", "https://www.ammonit.ru/paleotexts.htm");
+            bundle.putString("url", "https://www.ammonit.ru/paleotexts.htm");
             fragment = new WebViewFragment();
             fragment.setArguments(bundle);
-        }  else if (id == R.id.paleonews) {
+        } else if (id == R.id.paleonews) {
             bundle.putString("url", "https://www.ammonit.ru/news.htm");
             fragment = new WebViewFragment();
             fragment.setArguments(bundle);
-        }
-        else if (id == R.id.photo_by_geochrones) {
+        } else if (id == R.id.photo_by_geochrones) {
 
             show_list_geochrones();
 
@@ -143,62 +144,86 @@ public static  DrawerLayout mdrawer;
         return true;
     }
 
-  void show_list_geochrones()
-  {
-      int req_pg  = 1;
-      final Dialog dialog = new Dialog(MainActivity.ctx);
-      dialog.setContentView(R.layout.dlg_list_geochrones);
-      dialog.setTitle("Век / Ярус (Stage)");
-      dialog.show();
-      final TextView title = (TextView) dialog.findViewById(R.id.lgh_title);
-      final GridView  listView  = (GridView) dialog.findViewById(R.id.lgh_grid_geochrones);
+    void show_list_geochrones() {
+        int req_pg = 1;
+        final Dialog dialog = new Dialog(MainActivity.ctx);
+        dialog.setContentView(R.layout.dlg_list_geochrones);
+        dialog.setTitle("Век / Ярус (Stage)");
+        dialog.show();
+        final TextView title = (TextView) dialog.findViewById(R.id.lgh_title);
+        final GridView listView = (GridView) dialog.findViewById(R.id.lgh_grid_geochrones);
 
-      String []geochrones = new String[tag_geochrones.length];
-      for(int i=0;i<tag_geochrones.length;i++)
-      {
-          geochrones[i] = new String(tag_geochrones[i].name);
-      }
-      ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-              android.R.layout.simple_list_item_1, android.R.id.text1, geochrones );
+        String[] geochrones = new String[tag_geochrones.length];
+        for (int i = 0; i < tag_geochrones.length; i++) {
+            geochrones[i] = new String(tag_geochrones[i].name);
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, geochrones);
 
-      // Assign adapter to ListView
-      listView.setAdapter(adapter);
+        // Assign adapter to ListView
+        listView.setAdapter(adapter);
 
-      listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-          @Override
-          public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-              Fragment fragment = null;
-              Bundle bundle = new Bundle();
-              bundle.putString(GalleryFragment.BKEY_URL, "https://ammonit.ru/geochrono/"+tag_geochrones[i].tag+"/popfotos/");
-              fragment = new GalleryFragment();
-              fragment.setArguments(bundle);
-              if (fragment != null) {
-                  FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                  ft.replace(R.id.content_frame, fragment);
-                  ft.commit();
-                  dialog.hide();
-              }
-          }
-      });
+                Fragment fragment = null;
+                Bundle bundle = new Bundle();
+                bundle.putString(GalleryFragment.BKEY_URL, "https://ammonit.ru/geochrono/" + tag_geochrones[i].tag + "/popfotos/");
+                galleryFragment = new GalleryFragment();;
+                fragment = galleryFragment;
+                fragment.setArguments(bundle);
+                if (fragment != null) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.content_frame, fragment);
+                    ft.commit();
+                    dialog.hide();
+                }
+            }
+        });
 
-      Button ok = (Button) dialog.findViewById(R.id.lgh_ok);
-      Button cancel = (Button) dialog.findViewById(R.id.lgh_cancel);
-      ok.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-            //  pnum = seek.getProgress();
-             // (new GalleryFragment.Imgitems_getter()).execute(url+pnum);
-              dialog.hide();
-          }
-      });
+        Button ok = (Button) dialog.findViewById(R.id.lgh_ok);
+        Button cancel = (Button) dialog.findViewById(R.id.lgh_cancel);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //  pnum = seek.getProgress();
+                // (new GalleryFragment.Imgitems_getter()).execute(url+pnum);
+                dialog.hide();
+            }
+        });
 
-      cancel.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-              dialog.hide();
-          }
-      });
-  }
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
+            }
+        });
+    }
+
+
+
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (action == KeyEvent.ACTION_DOWN) {
+                    Log.w("LightWriter", "I WORK ---  BRO.");
+                    galleryFragment.next_page();
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (action == KeyEvent.ACTION_DOWN) {
+                    Log.w("LightWriter", "I WORK ---  BRO.");
+                    galleryFragment.prev_page();
+                }
+                return true;
+            default:
+                return super.dispatchKeyEvent(event);
+        }
+    }
 
 }

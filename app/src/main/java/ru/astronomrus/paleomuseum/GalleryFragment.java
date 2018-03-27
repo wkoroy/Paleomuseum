@@ -46,6 +46,7 @@ public class GalleryFragment extends Fragment {
 
     final Animation textAnimation = AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.alpha_up_text);
 
+
     int pnum =1;
     int max_page =2879;
     GridView gv;
@@ -315,60 +316,23 @@ public class GalleryFragment extends Fragment {
        });
 
    }
-    public void show_progress_pages_dialog()
-    {
-        final AlertDialog.Builder popDialog = new AlertDialog.Builder(MainActivity.ctx);
-        final SeekBar seek = new SeekBar(MainActivity.ctx);
-        final TextView ttl = new TextView(MainActivity.ctx);
+   
+   public  void  next_page()
+   {
+       if(pnum < max_page)
+       {
+           pnum++;
+           (new Imgitems_getter()).execute(url+pnum);
+       }
+   }
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-        seek.setLayoutParams(lp);
-        seek.setMax(max_page);
-        seek.setKeyProgressIncrement(1);
-
-        popDialog.setIcon(R.mipmap.ic_launcher);
-        popDialog.setCustomTitle(ttl);
-        ttl.setBackgroundColor(MainActivity.ctx.getResources().getColor(R.color.colorBackground));
-        ttl.setText(" Выберите страницу для перехода ");
-        ttl.setTextColor(MainActivity.ctx.getResources().getColor(android.R.color.white));
-        ttl.setTextSize(18);
-        ttl.setLayoutParams(lp);
-
-        popDialog.setView(seek);
-
-        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
-                ttl.setText(" Номер выбранной страницы: "+progress);
-                pnum=progress;
-
-            }
-            public void onStartTrackingTouch(SeekBar arg0) {
-            }
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                pnum=seek.getProgress();
-            }
-        });
-
-        popDialog.setPositiveButton("OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        (new Imgitems_getter()).execute(url+pnum);
-                    }
-                });
-
-        popDialog.setNegativeButton("Отмена" ,
-        new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        popDialog.create();
-        popDialog.show();
-    }
-
+   public  void  prev_page()
+   {
+       if(pnum >1){
+           pnum --;
+           (new Imgitems_getter()).execute(url+pnum);
+       }
+   }
 
 
 }
