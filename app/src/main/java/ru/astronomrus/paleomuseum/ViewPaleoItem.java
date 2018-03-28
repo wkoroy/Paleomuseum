@@ -3,6 +3,7 @@ package ru.astronomrus.paleomuseum;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -96,6 +97,21 @@ public class ViewPaleoItem extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 share.startAnimation(  AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.scale));
+
+                try {
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    String shareSubText = "";
+                    String shareBodyText =getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big")+"\n"+ getIntent().getStringExtra(GalleryFragment.I_TEXT) +"\nАвтор:"
+                            + getIntent().getStringExtra(GalleryFragment.I_AUTHOR)+
+                            "\n"+getIntent().getStringExtra(GalleryFragment.I_DATE);
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubText);
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareBodyText);
+                     startActivity(Intent.createChooser(shareIntent, "Поделиться"));
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         });
         download.setOnClickListener(new View.OnClickListener() {
