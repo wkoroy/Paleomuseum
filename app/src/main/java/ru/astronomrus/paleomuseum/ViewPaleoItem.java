@@ -5,10 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.chrisbanes.photoview.PhotoView;
@@ -24,6 +27,8 @@ import okhttp3.Response;
 public class ViewPaleoItem extends AppCompatActivity {
     final Pattern TAG_REGEX_descr = Pattern.compile("<meta name=\"Description\" content=\""+"(.+?)"+"\">");
 
+    LinearLayout buttons;
+    LinearLayout content;
     ImageView loadimg;
     final Pattern TAG_REGEX_descr2 = Pattern.compile("<p style=\"text-align:left;\">"+"(.+?)"+"<");
     PhotoView mimgv;
@@ -32,6 +37,9 @@ public class ViewPaleoItem extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_paleo_item);
+
+        buttons = (LinearLayout)  findViewById(R.id.vp_buttons);
+        content = (LinearLayout)  findViewById(R.id.vp_content);
         mimgv = (PhotoView) findViewById(R.id.vp_img);
         mtv = (TextView) findViewById(R.id.vp_text);
         mtv.setMovementMethod(new ScrollingMovementMethod());
@@ -68,8 +76,35 @@ public class ViewPaleoItem extends AppCompatActivity {
                 "\n"+getIntent().getStringExtra(GalleryFragment.I_DATE));
 
         ( new Description_getter()).execute(getIntent().getStringExtra(GalleryFragment.I_LINK));
-    }
 
+        buttons.startAnimation( AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.ll_show) );
+
+        final ImageButton share = (ImageButton) findViewById(R.id.vp_share);
+        final ImageButton download = (ImageButton) findViewById(R.id.vp_load);
+        final ImageButton bookmark = (ImageButton) findViewById(R.id.vp_bookmark);
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                share.startAnimation(  AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.scale));
+            }
+        });
+        download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                download.startAnimation(  AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.scale_x));
+            }
+        });
+
+        bookmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bookmark.startAnimation(  AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.scale_x));
+            }
+        });
+
+
+    }
 
     //    ">
     public    class Description_getter extends AsyncTask<String, String, Void> {
@@ -147,6 +182,8 @@ public class ViewPaleoItem extends AppCompatActivity {
                     "\n  Смотреть на сайте: "+
                     getIntent().getStringExtra(GalleryFragment.I_LINK));
             Log.d("DESCR" , text);
+
+        buttons.startAnimation( AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.ll_hide) );
 
         }
     };
