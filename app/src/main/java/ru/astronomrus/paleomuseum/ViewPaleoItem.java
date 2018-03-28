@@ -1,6 +1,13 @@
 package ru.astronomrus.paleomuseum;
 
+import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -13,10 +20,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.chrisbanes.photoview.PhotoView;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
@@ -26,7 +35,7 @@ import okhttp3.Response;
 
 public class ViewPaleoItem extends AppCompatActivity {
     final Pattern TAG_REGEX_descr = Pattern.compile("<meta name=\"Description\" content=\""+"(.+?)"+"\">");
-
+    public final static int PERMISSIONS_REQUEST_STRGRW = 10;
     LinearLayout buttons;
     LinearLayout content;
     ImageView loadimg;
@@ -93,6 +102,21 @@ public class ViewPaleoItem extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 download.startAnimation(  AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.scale_x));
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+
+                    if (ActivityCompat.checkSelfPermission(MainActivity.ctx, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                    {
+                        image_download(getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big"));
+                    }
+                    else
+                    {
+                        ActivityCompat.requestPermissions((Activity) ViewPaleoItem.this,
+                                new String[]{ android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                PERMISSIONS_REQUEST_STRGRW);
+
+                    }
+                }
             }
         });
 
@@ -187,4 +211,52 @@ public class ViewPaleoItem extends AppCompatActivity {
 
         }
     };
+
+
+    @Override
+    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults){
+
+        switch(permsRequestCode){
+
+            case PERMISSIONS_REQUEST_STRGRW:
+            {
+
+                image_download( getIntent().getStringExtra(GalleryFragment.I_IMG_LINK).replace("-sm" , "-big") );
+            }
+            break;
+
+        }
+
+    }
+
+    public static  void image_download(String imurl) {
+        File direct = new File(Environment.getExternalStorageDirectory()
+                + "/Download");
+        if (!direct.exists()) {
+            direct.mkdirs();
+        }
+        if(! direct.canWrite()) return;
+
+        DownloadManager mgr = (DownloadManager) MainActivity.ctx.getSystemService(Context.DOWNLOAD_SERVICE);
+
+        Uri downloadUri = Uri.parse(imurl);
+        DownloadManager.Request request = new DownloadManager.Request(
+                Uri.parse(imurl));
+
+
+        String imgfname = "";
+        String []tmpar  = imurl.split("/");
+        imgfname = tmpar[tmpar.length-1];
+        request.setAllowedNetworkTypes(
+                DownloadManager.Request.NETWORK_WIFI
+                        | DownloadManager.Request.NETWORK_MOBILE)
+                .setAllowedOverRoaming(false).setTitle(MainActivity.ctx.getString(R.string.app_name))
+                .setDescription("Загрузка изображения ")
+                .setDestinationInExternalPublicDir("/Download",imgfname  ).setNotificationVisibility(View.VISIBLE);
+
+        mgr.enqueue(request);
+        Toast toast = Toast.makeText(MainActivity.ctx,
+                "Изображение загружено в папку Download", Toast.LENGTH_SHORT);
+        toast.show();
+    }
 }
