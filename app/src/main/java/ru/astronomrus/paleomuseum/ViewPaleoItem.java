@@ -5,9 +5,11 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.PowerManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +30,12 @@ import com.github.chrisbanes.photoview.PhotoView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.regex.Pattern;
 
 import okhttp3.OkHttpClient;
@@ -72,7 +80,30 @@ public class ViewPaleoItem extends AppCompatActivity {
         anim.setRepeatCount(-1);
         loadimg.startAnimation(anim);
 
-        Picasso.with(this).load(getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big"))
+        String imglink = getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big");
+        String [] nmtmp = imglink.split("/");
+        final String flname = nmtmp[nmtmp.length -1];
+        if( new File(getCacheDir(),flname).exists())
+        {
+            imglink = getCacheDir()+"/"+flname;
+            Picasso.with(this).load(new File(imglink) )
+                    .into(mimgv, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+                            loadimg.setVisibility(View.GONE);
+                            loadimg.clearAnimation();
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
+
+        }
+        else
+
+        Picasso.with(this).load(imglink)
                 .into(mimgv, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess() {
@@ -105,7 +136,7 @@ public class ViewPaleoItem extends AppCompatActivity {
 
 
         buttons.startAnimation( AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.ll_show) );
-        final  String image =   getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big");
+        final  String image = imglink;
 
 
         final ImageButton share = (ImageButton) findViewById(R.id.vp_share);
@@ -176,6 +207,7 @@ public class ViewPaleoItem extends AppCompatActivity {
 
 
 
+                ( new DownloadTask(ViewPaleoItem.this)).execute(image,flname);
             }
         });
 
@@ -312,4 +344,96 @@ public class ViewPaleoItem extends AppCompatActivity {
                 "Изображение загружено в папку Download", Toast.LENGTH_SHORT);
         toast.show();
     }
+
+
+    private class DownloadTask extends AsyncTask<String, Integer, String> {
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            if(prevrpoc != values[0]) {
+                Log.d("DOW", "perc  = " + values[0]);
+
+            }
+            super.onProgressUpdate(values);
+            prevrpoc = values[0];
+        }
+
+        String flname="file";
+        int prevrpoc = 0;
+        private Context context;
+        private PowerManager.WakeLock mWakeLock;
+
+        public DownloadTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(String... sUrl) {
+
+            InputStream input = null;
+            OutputStream output = null;
+            HttpURLConnection connection = null;
+            try {
+
+
+                String urlt =  sUrl[0];
+
+                URL url = new URL(urlt);
+                flname = sUrl[1];
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+
+                // expect HTTP 200 OK, so we don't mistakenly save error report
+                // instead of the file
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    return "Server returned HTTP " + connection.getResponseCode()
+                            + " " + connection.getResponseMessage();
+                }
+
+                // this will be useful to display download percentage
+                // might be -1: server did not report the length
+                int fileLength = connection.getContentLength();
+
+                // download the file
+                input = connection.getInputStream();
+                output = new FileOutputStream(getCacheDir()+"/"+flname);
+
+                byte data[] = new byte[512];
+                long total = 0;
+                int count;
+                while ((count = input.read(data)) != -1) {
+                    // allow canceling with back button
+                    if (isCancelled()) {
+                        input.close();
+                        return null;
+                    }
+                    total += count;
+
+                    output.write(data, 0, count);
+                }
+            } catch (Exception e) {
+                return e.toString();
+            } finally {
+                try {
+                    if (output != null)
+                        output.close();
+                    if (input != null)
+                        input.close();
+                } catch (IOException ignored) {
+                }
+
+                if (connection != null)
+                    connection.disconnect();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+            Log.d("DOW" , "completed!");
+
+            super.onPostExecute(s);
+        }
+    }
+
 }
