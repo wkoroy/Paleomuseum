@@ -43,6 +43,8 @@ public class GalleryFragment extends Fragment {
     final public static String I_TEXT="itext";
     final public static String I_DATE="idate";
     final public static String I_AUTHOR="iauthor";
+    final public static String I_DESCR="idescr";
+
 
     final Animation textAnimation = AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.alpha_up_text);
 

@@ -39,28 +39,6 @@ public class MainActivity extends AppCompatActivity
         tag_geochrones = new Paleotag[geochronestag.length / 2];
 
 
-        ///////////////// test DB
-        db_BookMark db = new db_BookMark(this);
-
-        /**
-         * CRUD Operations
-         * */
-        // add Books
-        db.addBook(new PaleoItem("Android Application Development Cookbook", "Wei Meng Lee", "13232323", "der3ere", "wse"));
-        db.addBook(new PaleoItem("Android Programming: The Big Nerd Ranch Guide", "Bill Phillips and Brian Hardy", "23324", "23324", "23324"));
-        db.addBook(new PaleoItem("Learn Android App Development", "Wallace Jackson", "#$#%4", "23eds34wsd", "DFRT$"));
-
-        // get all books
-        List<PaleoItem> list = db.getAllBooks();
-
-        // delete one book
-        db.deleteBook(list.get(0));
-
-        // get all books
-        db.getAllBooks();
-        //////////////////
-
-
         for (int i = 0, k = 0; i < geochronestag.length; i += 2) {
             tag_geochrones[k] = new Paleotag();
             tag_geochrones[k].name = geochronestag[i];
@@ -129,7 +107,12 @@ public class MainActivity extends AppCompatActivity
             bundle.putString("url", "https://www.ammonit.ru/news.htm");
             fragment = new WebViewFragment();
             fragment.setArguments(bundle);
-        } else if (id == R.id.photo_by_geochrones) {
+        }
+        else if (id == R.id.bookmarks) {
+
+            fragment = new BookmarksView();
+        }
+        else if (id == R.id.photo_by_geochrones) {
 
             show_list_geochrones();
 

@@ -90,7 +90,19 @@ public class ViewPaleoItem extends AppCompatActivity {
                 + getIntent().getStringExtra(GalleryFragment.I_AUTHOR)+
                 "\n"+getIntent().getStringExtra(GalleryFragment.I_DATE));
 
-        ( new Description_getter()).execute(getIntent().getStringExtra(GalleryFragment.I_LINK));
+      if(! getIntent().hasExtra(GalleryFragment.I_DESCR))  ( new Description_getter()).execute(getIntent().getStringExtra(GalleryFragment.I_LINK));
+      else
+      {
+          description = getIntent().getStringExtra(GalleryFragment.I_DESCR);
+
+
+          mtv.setText(ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_TEXT) +
+                  "\n\n"+description+"\n\nАвтор:"+ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_AUTHOR)
+                  +"\n"+ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_DATE) +
+                  "\n  Смотреть на сайте: "+
+                  getIntent().getStringExtra(GalleryFragment.I_LINK));
+      }
+
 
         buttons.startAnimation( AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.ll_show) );
         final  String image =   getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big");
@@ -154,7 +166,7 @@ public class ViewPaleoItem extends AppCompatActivity {
                 if(! db.if_exists(image))
                 db.addBook(new PaleoItem( getIntent().getStringExtra(GalleryFragment.I_TEXT) ,
                         getIntent().getStringExtra(GalleryFragment.I_AUTHOR) , image
-                       , description, " "));
+                       , description +"\n" +   getIntent().getStringExtra(GalleryFragment.I_DATE), getIntent().getStringExtra(GalleryFragment.I_LINK) ));
                 else
                     db.deleteBook(image);
 
