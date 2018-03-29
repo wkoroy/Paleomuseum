@@ -66,6 +66,11 @@ public class ViewPaleoItem extends AppCompatActivity {
         mtv = (TextView) findViewById(R.id.vp_text);
         mtv.setMovementMethod(new ScrollingMovementMethod());
 
+        final ImageButton share = (ImageButton) findViewById(R.id.vp_share);
+        final ImageButton download = (ImageButton) findViewById(R.id.vp_load);
+        final ImageButton bookmark = (ImageButton) findViewById(R.id.vp_bookmark);
+
+
         db = new db_BookMark(ViewPaleoItem.this);
         loadimg = (ImageView) findViewById(R.id.vp_imgload);
         try{
@@ -99,7 +104,6 @@ public class ViewPaleoItem extends AppCompatActivity {
 
                         }
                     });
-
         }
         else
 
@@ -136,12 +140,9 @@ public class ViewPaleoItem extends AppCompatActivity {
 
 
         buttons.startAnimation( AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.ll_show) );
-        final  String image = imglink;
+        final  String image = getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big");;
 
 
-        final ImageButton share = (ImageButton) findViewById(R.id.vp_share);
-        final ImageButton download = (ImageButton) findViewById(R.id.vp_load);
-        final ImageButton bookmark = (ImageButton) findViewById(R.id.vp_bookmark);
 
         share.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,6 +188,9 @@ public class ViewPaleoItem extends AppCompatActivity {
         });
 
         if(db.if_exists(image)) bookmark.setImageResource(R.drawable.ic_bookmark);
+        else
+            bookmark.setImageResource(R.drawable.ic_bookmark_border);
+
 
         bookmark.setOnClickListener(new View.OnClickListener() {
             @Override
