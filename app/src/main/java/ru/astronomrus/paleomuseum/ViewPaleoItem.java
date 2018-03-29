@@ -43,17 +43,22 @@ public class ViewPaleoItem extends AppCompatActivity {
     final Pattern TAG_REGEX_descr2 = Pattern.compile("<p style=\"text-align:left;\">"+"(.+?)"+"<");
     PhotoView mimgv;
     TextView mtv;
+    Context ctx;
+    db_BookMark db;
+    String description="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_paleo_item);
 
+        ctx = this;
         buttons = (LinearLayout)  findViewById(R.id.vp_buttons);
         content = (LinearLayout)  findViewById(R.id.vp_content);
         mimgv = (PhotoView) findViewById(R.id.vp_img);
         mtv = (TextView) findViewById(R.id.vp_text);
         mtv.setMovementMethod(new ScrollingMovementMethod());
 
+        db = new db_BookMark(ViewPaleoItem.this);
         loadimg = (ImageView) findViewById(R.id.vp_imgload);
         try{
             getSupportActionBar().hide();
@@ -88,6 +93,8 @@ public class ViewPaleoItem extends AppCompatActivity {
         ( new Description_getter()).execute(getIntent().getStringExtra(GalleryFragment.I_LINK));
 
         buttons.startAnimation( AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.ll_show) );
+        final  String image =   getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big");
+
 
         final ImageButton share = (ImageButton) findViewById(R.id.vp_share);
         final ImageButton download = (ImageButton) findViewById(R.id.vp_load);
@@ -136,10 +143,27 @@ public class ViewPaleoItem extends AppCompatActivity {
             }
         });
 
+        if(db.if_exists(image)) bookmark.setImageResource(R.drawable.ic_bookmark);
+
         bookmark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 bookmark.startAnimation(  AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.scale_x));
+
+
+                if(! db.if_exists(image))
+                db.addBook(new PaleoItem( getIntent().getStringExtra(GalleryFragment.I_TEXT) ,
+                        getIntent().getStringExtra(GalleryFragment.I_AUTHOR) , image
+                       , description, " "));
+                else
+                    db.deleteBook(image);
+
+                if(db.if_exists(image)) bookmark.setImageResource(R.drawable.ic_bookmark);
+                else
+                    bookmark.setImageResource(R.drawable.ic_bookmark_border);
+
+
+
             }
         });
 
@@ -222,6 +246,7 @@ public class ViewPaleoItem extends AppCompatActivity {
                     "\n  Смотреть на сайте: "+
                     getIntent().getStringExtra(GalleryFragment.I_LINK));
             Log.d("DESCR" , text);
+            description = text;
 
         buttons.startAnimation( AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.ll_hide) );
 

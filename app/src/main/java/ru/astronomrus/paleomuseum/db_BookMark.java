@@ -111,7 +111,7 @@ public class db_BookMark extends SQLiteOpenHelper {
     // Database Version
     private static final int DATABASE_VERSION = 1;
     // Database Name
-    private static final String DATABASE_NAME = "PaleoDB";
+    private static final String DATABASE_NAME = "Paleodb";
 
     public db_BookMark(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -256,7 +256,7 @@ public class db_BookMark extends SQLiteOpenHelper {
     // Get All Books
     public  boolean  if_exists(String img) {
         // 1. build the query
-        String query = "SELECT  * FROM " + TABLE_BOOKMARKS + " where image like '"+img+"'";
+        String query = "SELECT  image FROM " + TABLE_BOOKMARKS + " where image like '"+img+"'";
 
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
@@ -278,13 +278,32 @@ public class db_BookMark extends SQLiteOpenHelper {
 
         // 2. delete
         db.delete(TABLE_BOOKMARKS,
-                KEY_ID+" = ?",
-                new String[] { String.valueOf(paleoItem.getId()) });
+                KEY_IMAGE+" = ?",
+                new String[] { String.valueOf(paleoItem.getImage()) });
 
         // 3. close
         db.close();
 
         Log.d("deleteBook", paleoItem.toString());
+
+    }
+
+
+    // Deleting single paleoItem
+    public void deleteBook(String  urlumg) {
+
+        // 1. get reference to writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // 2. delete
+        db.delete(TABLE_BOOKMARKS,
+                KEY_IMAGE+" = ?",
+                new String[] { String.valueOf( urlumg ) });
+
+        // 3. close
+        db.close();
+
+        Log.d("deleteBook",  urlumg );
 
     }
 }
