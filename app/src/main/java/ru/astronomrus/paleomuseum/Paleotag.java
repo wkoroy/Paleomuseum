@@ -12,4 +12,9 @@ public class Paleotag {
     }
     public String name;
     public String tag;
+
+    @Override
+    public String toString() {
+        return  name+"#"+tag;
+    }
 }

@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import java.util.Arrays;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     public static DrawerLayout mdrawer;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity
 
         tag_geochrones = convert_text_to_tag( getString(R.string.paleochrono));
         tag_places= convert_text_to_tag( getString(R.string.paleoplaces));
+
 
         ctx = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -266,6 +269,22 @@ public class MainActivity extends AppCompatActivity
     Paleotag [] convert_text_to_tag(String text )
     {
         String[]  tag = text.split("#");
+        String []tmptosort = new String[tag.length/2];
+        for (int i = 0, k = 0; i < tag.length; i += 2)
+        {
+            tmptosort[k] = new String(tag[i]+"#"+tag[i+1]);
+            k++;
+        }
+
+
+        Arrays.sort(tmptosort);
+        String sortres="";
+        for (int i = 0; i < tmptosort.length; i ++)
+        {
+            sortres+= tmptosort[i]+"#";
+        }
+
+         tag = sortres.split("#");
         Paleotag []pt = new Paleotag[tag.length / 2];
         for (int i = 0, k = 0; i < tag.length; i += 2) {
             pt[k] = new Paleotag();
@@ -273,6 +292,7 @@ public class MainActivity extends AppCompatActivity
             pt[k].tag = tag[i + 1];
             k++;
         }
+
         return pt;
     }
 
