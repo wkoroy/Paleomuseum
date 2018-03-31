@@ -210,7 +210,7 @@ public class ViewPaleoItem extends AppCompatActivity {
                     bookmark.setImageResource(R.drawable.ic_bookmark_border);
 
 
-
+                ( new DownloadTask(ViewPaleoItem.this)).execute(image.replace("-big" , "-sm"),flname.replace("-big" , "-sm"));
                 ( new DownloadTask(ViewPaleoItem.this)).execute(image,flname);
             }
         });

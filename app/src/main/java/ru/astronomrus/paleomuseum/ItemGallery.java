@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 /**
  * Created by vkoroy on 25.02.18.
  */
@@ -39,7 +41,20 @@ public class ItemGallery extends ArrayAdapter<String> {
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         if(image_linx[position].length()>0)
-        Picasso.with(MainActivity.ctx).load(image_linx[position] ).into( imageView);
+        {
+            String imglink = image_linx[position];
+            String [] nmtmp = imglink.split("/");
+            final String flname = nmtmp[nmtmp.length -1];
+            if( new File(MainActivity.ctx.getCacheDir(),flname).exists())
+            {
+                imglink = MainActivity.ctx.getCacheDir()+"/"+flname;
+                Picasso.with(MainActivity.ctx).load(new File(imglink) )
+                        .into(imageView);
+            }
+            else
+            Picasso.with(MainActivity.ctx).load(image_linx[position]).into(imageView);
+
+        }
         txtTitle.setText(web[position]);
         Log.d("IMAGERES", String.valueOf(position));
         // if( position<imgs.length) imageView.setImageBitmap(imgs[position]); // загрузка из озу
