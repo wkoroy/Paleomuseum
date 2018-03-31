@@ -223,7 +223,7 @@ public class db_BookMark extends SQLiteOpenHelper {
         List<PaleoItem> paleoItems = new LinkedList<PaleoItem>();
 
         // 1. build the query
-        String query = "SELECT  * FROM " + TABLE_BOOKMARKS;
+        String query = "SELECT  * FROM " + TABLE_BOOKMARKS+ " order by id DESC";
 
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
