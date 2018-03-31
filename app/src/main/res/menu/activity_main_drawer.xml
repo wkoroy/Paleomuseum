@@ -16,6 +16,11 @@
             android:title="По геохронологической шкале " />
 
         <item
+            android:id="@+id/photo_by_place"
+            android:icon="@drawable/ic_gallery_pop"
+            android:title="По местоположению" />
+
+        <item
             android:id="@+id/articles"
             android:icon="@drawable/ic_articles"
             android:title="Публикации" />

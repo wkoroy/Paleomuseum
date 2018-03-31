@@ -25,7 +25,7 @@
         android:orientation="vertical">
 
         <GridView
-            android:id="@+id/lgh_grid_geochrones"
+            android:id="@+id/lgh_grid_tags"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
