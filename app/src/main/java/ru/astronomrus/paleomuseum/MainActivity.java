@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity
     static Context ctx;
     static Paleotag[] tag_geochrones;
     static Paleotag[] tag_places;
+    static Paleotag[] tag_bioclass;
+    Dialog dialog ;
     GalleryFragment galleryFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity
 
         tag_geochrones = convert_text_to_tag( getString(R.string.paleochrono));
         tag_places= convert_text_to_tag( getString(R.string.paleoplaces));
+        tag_bioclass= convert_text_to_tag( getString(R.string.paleobioclasses));
 
 
         ctx = this;
@@ -116,6 +119,11 @@ public class MainActivity extends AppCompatActivity
             show_list_geoplaces();
 
         }
+        else if (id == R.id.photo_by_bioclass) {
+
+            show_list_bioclasses();
+
+        }
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, fragment);
@@ -129,11 +137,12 @@ public class MainActivity extends AppCompatActivity
 
     void show_list_geoplaces() {
         int req_pg = 1;
-        final Dialog dialog = new Dialog(MainActivity.ctx);
+           dialog = new Dialog(MainActivity.ctx);
         dialog.setContentView(R.layout.dlg_list_geochrones);
         dialog.setTitle(" Место");
         dialog.show();
         final TextView title = (TextView) dialog.findViewById(R.id.lgh_title);
+        title.setText("Место");
         final GridView listView = (GridView) dialog.findViewById(R.id.lgh_grid_tags);
 
         String[] geoplaces = new String[tag_places.length];
@@ -186,11 +195,12 @@ public class MainActivity extends AppCompatActivity
 
     void show_list_geochrones() {
         int req_pg = 1;
-        final Dialog dialog = new Dialog(MainActivity.ctx);
+           dialog = new Dialog(MainActivity.ctx);
         dialog.setContentView(R.layout.dlg_list_geochrones);
         dialog.setTitle("Век / Ярус (Stage)");
         dialog.show();
         final TextView title = (TextView) dialog.findViewById(R.id.lgh_title);
+        title.setText("Век / Ярус (Stage)");
         final GridView listView = (GridView) dialog.findViewById(R.id.lgh_grid_tags);
 
         String[] geochrones = new String[tag_geochrones.length];
@@ -222,25 +232,49 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        Button ok = (Button) dialog.findViewById(R.id.lgh_ok);
-        Button cancel = (Button) dialog.findViewById(R.id.lgh_cancel);
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //  pnum = seek.getProgress();
-                // (new GalleryFragment.Imgitems_getter()).execute(url+pnum);
-                dialog.hide();
-            }
-        });
-
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.hide();
-            }
-        });
     }
 
+
+    void show_list_bioclasses() {
+        int req_pg = 1;
+           dialog = new Dialog(MainActivity.ctx);
+        dialog.setContentView(R.layout.dlg_list_geochrones);
+        dialog.setTitle("Типы окаменелостей");
+        dialog.show();
+        final TextView title = (TextView) dialog.findViewById(R.id.lgh_title);
+        title.setText("Типы окаменелостей");
+        final GridView listView = (GridView) dialog.findViewById(R.id.lgh_grid_tags);
+
+        String[] bioclasses = new String[tag_bioclass.length];
+        for (int i = 0; i < tag_bioclass.length; i++) {
+            bioclasses[i] = new String(tag_bioclass[i].name);
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, bioclasses);
+
+        // Assign adapter to ListView
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                Fragment fragment = null;
+                Bundle bundle = new Bundle();
+                bundle.putString(GalleryFragment.BKEY_URL, "https://ammonit.ru/fossil/" + tag_bioclass[i].tag + "/popfotos/");
+                galleryFragment = new GalleryFragment();;
+                fragment = galleryFragment;
+                fragment.setArguments(bundle);
+                if (fragment != null) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.content_frame, fragment);
+                    ft.commit();
+                    dialog.hide();
+                }
+            }
+        });
+
+    }
 
 
 

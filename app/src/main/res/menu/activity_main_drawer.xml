@@ -21,6 +21,11 @@
             android:title="По местоположению" />
 
         <item
+            android:id="@+id/photo_by_bioclass"
+            android:icon="@drawable/ic_gallery_pop"
+            android:title="По типу окаменелостей" />
+
+        <item
             android:id="@+id/articles"
             android:icon="@drawable/ic_articles"
             android:title="Публикации" />
