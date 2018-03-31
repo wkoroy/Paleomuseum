@@ -44,7 +44,7 @@ public class ItemGallery extends ArrayAdapter<String> {
         {
             String imglink = image_linx[position];
             String [] nmtmp = imglink.split("/");
-            final String flname = nmtmp[nmtmp.length -1];
+            final String flname = nmtmp[nmtmp.length -1].replace("-big"   , "-sm");
             if( new File(MainActivity.ctx.getCacheDir(),flname).exists())
             {
                 imglink = MainActivity.ctx.getCacheDir()+"/"+flname;
