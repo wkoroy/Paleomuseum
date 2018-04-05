@@ -22,6 +22,13 @@ public class Utils {
         }
         return tagValues;
     }
+    public  static  String RemoveTag(String html){
+        html = html.replaceAll("\\<.*?>","");
+        html = html.replaceAll("&nbsp;","");
+        html = html.replaceAll("&amp;","");
+
+        return html;
+    }
 
     public  static String convert_to_simple_text(String text)
     {
@@ -51,6 +58,7 @@ public class Utils {
                         break;
                 }
 
+
                 text = text.replaceAll(html_ch+";",repl_str);
                 //<p style="text-align: justify;">
 
@@ -58,6 +66,7 @@ public class Utils {
             }
             else break;
         }
+        text =RemoveTag(text);
 
         text = text.replaceAll("</h3>"," ");
         text = text.replaceAll("<h3>"," ");

@@ -5,7 +5,6 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -15,14 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +51,8 @@ public class ViewPaleoItem extends AppCompatActivity {
     Context ctx;
     db_BookMark db;
     String description="";
+    String other_descr_data="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,9 +152,9 @@ public class ViewPaleoItem extends AppCompatActivity {
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");
                     String shareSubText = "";
-                    String shareBodyText =getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big")+"\n"+ getIntent().getStringExtra(GalleryFragment.I_TEXT) +"\nАвтор:"
-                            + getIntent().getStringExtra(GalleryFragment.I_AUTHOR)+
-                            "\n"+getIntent().getStringExtra(GalleryFragment.I_DATE);
+                    String shareBodyText =getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big")+
+                            "\n"+
+                    mtv.getText().toString();
                     shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubText);
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareBodyText);
                      startActivity(Intent.createChooser(shareIntent, "Поделиться"));
@@ -201,7 +200,7 @@ public class ViewPaleoItem extends AppCompatActivity {
                 if(! db.if_exists(image))
                 db.addBook(new PaleoItem( getIntent().getStringExtra(GalleryFragment.I_TEXT) ,
                         getIntent().getStringExtra(GalleryFragment.I_AUTHOR) , image
-                       , description +"\n" +   getIntent().getStringExtra(GalleryFragment.I_DATE), getIntent().getStringExtra(GalleryFragment.I_LINK) ));
+                       , description +"\n"+ other_descr_data +"\n"+   getIntent().getStringExtra(GalleryFragment.I_DATE), getIntent().getStringExtra(GalleryFragment.I_LINK) ));
                 else
                     db.deleteBook(image);
 
@@ -222,6 +221,9 @@ public class ViewPaleoItem extends AppCompatActivity {
     public    class Description_getter extends AsyncTask<String, String, Void> {
         String htmlcode = "";
         String text="";
+        String paleotime ="";
+        String place="";
+        String paleotype="";
         boolean is_reset= false;
         @Override
         protected Void doInBackground(String... strings) {
@@ -243,13 +245,23 @@ public class ViewPaleoItem extends AppCompatActivity {
 
                 try {
                     text = Utils.getTagValues(htmlcode, TAG_REGEX_descr).get(0);
+
+                    String stext = Utils.RemoveTag(htmlcode);
+                    paleotype =stext.substring(  stext.indexOf("Тип окаменелости:") , stext.indexOf("Ключевые слова")).trim();
+                    paleotime =stext.substring(  stext.indexOf("Возраст окаменелости: ") , stext.indexOf("Место находки:")).trim();
+                    place = stext.substring(  stext.indexOf("Место находки:") , stext.indexOf("Тип окаменелости: ")).trim();
+                    Log.d("PLACE" , place);
+
+                 other_descr_data = place+"\n"+paleotime+"\n"+paleotype;
+                    text = stext.substring(  stext.indexOf("Фотогалерея:") , stext.indexOf("Фотография")).trim().replace("   \t\t\t","");
+
                 }
                 catch (Exception e)
                 {
                     text = ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_TEXT);
                 }
 
-                try {
+                /*try {
                     String text2 = Utils.getTagValues(htmlcode , TAG_REGEX_descr2).get(0);
                     if(text2.indexOf(text) > -1)
                     {
@@ -260,7 +272,7 @@ public class ViewPaleoItem extends AppCompatActivity {
                 catch (Exception e)
                 {
 
-                }
+                }*/
                 //">  <meta content="toltek,  Ammonit.ru, paleontological internet portal" name="author
                 text = text.replace(">  <meta content=\"" , "").replace(ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_AUTHOR),"").
                         replace(",  Ammonit.ru, paleontological internet portal\" name=\"author" ,"");
@@ -288,18 +300,21 @@ public class ViewPaleoItem extends AppCompatActivity {
            // List<String> lst_time = Utils.getTagValues(htmlcode , TAG_REGEX_item_time_descr);
           //  List<String> lst_authors = Utils.getTagValues(htmlcode , TAG_REGEX_item_authots);
            // String text = Utils.getTagValues(htmlcode , TAG_REGEX_descr).get(0);
+            description = Utils.convert_to_simple_text(text).trim();
+            if(description.length() ==1) description="";
             mtv.setText(ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_TEXT) +
-                    "\n\n"+text+"\n\nАвтор:"+ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_AUTHOR)
-                    +"\n"+ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_DATE) +
+                    "\n\n"+description+"\n\nАвтор:"+ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_AUTHOR)
+                    +"\n"+ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_DATE) +"\n"+place+"\n"+paleotime+"\n"+paleotype+
                     "\n  Смотреть на сайте: "+
                     getIntent().getStringExtra(GalleryFragment.I_LINK));
-            Log.d("DESCR" , text);
-            description = text;
+            Log.d("DESCR" , description);
+
 
         buttons.startAnimation( AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.ll_hide) );
 
         }
     };
+
 
 
     @Override
