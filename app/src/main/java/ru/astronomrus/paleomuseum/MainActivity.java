@@ -46,7 +46,13 @@ public class MainActivity extends AppCompatActivity
         ctx = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mdrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        setSupportActionBar(toolbar);
+       try{
+           setSupportActionBar(toolbar);
+       }
+       catch(Exception e)
+       {
+
+       }
         if (savedInstanceState == null) {
 
             galleryFragment = new GalleryFragment();;
