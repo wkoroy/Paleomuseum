@@ -208,10 +208,11 @@ public class GalleryFragment extends Fragment {
             {
                 //Log.d("RESPD" ,  lst.get(i));
                 imgs[i] = "https://www.ammonit.ru"+Utils.getTagValues( lst.get(i) ,TAG_REGEX_imgs ).get(0);
+                if(authors[i].equals("EvgenyK") )  imgs[i] = "https://ammonit.ru/pict/logo2.jpg";/// специально для гневного EvgenyG
                 links[i] ="https://www.ammonit.ru/foto/"+ Utils.getTagValues( lst.get(i) ,TAG_REGEX_link ).get(0);
                 names[i] =Utils.convert_to_simple_text( Utils.getTagValues( lst.get(i) ,TAG_REGEX_names ).get(0) );
                 titles[i] =Utils.convert_to_simple_text( Utils.getTagValues( lst.get(i) ,TAG_REGEX_names ).get(0) ) +"\n\n"+times[i]+"\nАвтор: "+authors[i];
-
+                if(authors[i].equals("EvgenyK") )   titles[i]+="\n\nпользователь EvgenyK запретил просматривать свои фото в данном приложении";
                 Log.d("RESPD" ,   imgs[i] +" "+links[i]+ "  "+titles[i]);
 
             }

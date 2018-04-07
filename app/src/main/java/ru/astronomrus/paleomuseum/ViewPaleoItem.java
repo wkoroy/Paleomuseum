@@ -302,6 +302,7 @@ public class ViewPaleoItem extends AppCompatActivity {
            // String text = Utils.getTagValues(htmlcode , TAG_REGEX_descr).get(0);
             description = Utils.convert_to_simple_text(text).trim();
             if(description.length() ==1) description="";
+            if(ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_AUTHOR).equals("EvgenyK") )   description="пользователь EvgenyK запретил просматривать свои фото в данном приложении. Подробнее: https://ammonit.ru/text/2167.htm\n"+description;
             mtv.setText(ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_TEXT) +
                     "\n\n"+description+"\n\nАвтор:"+ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_AUTHOR)
                     +"\n"+ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_DATE) +"\n"+place+"\n"+paleotime+"\n"+paleotype+
