@@ -28,11 +28,13 @@
         <item
             android:id="@+id/articles"
             android:icon="@drawable/ic_articles"
-            android:title="Публикации" />
+            android:title="Публикации"
+            android:visible="false" />
         <item
             android:id="@+id/paleonews"
             android:icon="@drawable/ic_news"
-            android:title="Новости палеонтологии" />
+            android:title="Новости палеонтологии"
+            android:visible="false" />
 
         <item
             android:id="@+id/bookmarks"
