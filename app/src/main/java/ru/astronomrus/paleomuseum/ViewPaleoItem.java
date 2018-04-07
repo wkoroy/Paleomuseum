@@ -247,13 +247,14 @@ public class ViewPaleoItem extends AppCompatActivity {
                     text = Utils.getTagValues(htmlcode, TAG_REGEX_descr).get(0);
 
                     String stext = Utils.RemoveTag(htmlcode);
-                    paleotype =stext.substring(  stext.indexOf("Тип окаменелости:") , stext.indexOf("Ключевые слова")).trim();
-                    paleotime =stext.substring(  stext.indexOf("Возраст окаменелости: ") , stext.indexOf("Место находки:")).trim();
-                    place = stext.substring(  stext.indexOf("Место находки:") , stext.indexOf("Тип окаменелости: ")).trim();
+                    paleotype =get_ammonit_descr_text(stext ,"Тип окаменелости:" ,"Ключевые слова");//stext.substring(  stext.indexOf("Тип окаменелости:") , stext.indexOf("Ключевые слова")).trim();
+                    paleotime =get_ammonit_descr_text(stext,"Возраст окаменелости: ","Место находки:");//stext.substring(  stext.indexOf("Возраст окаменелости: ") , stext.indexOf("Место находки:")).trim();
+                    place = get_ammonit_descr_text(stext,"Место находки:","Тип окаменелости: " );//stext.substring(  stext.indexOf("Место находки:") , stext.indexOf("Тип окаменелости: ")).trim();
                     Log.d("PLACE" , place);
 
-                 other_descr_data = place+"\n"+paleotime+"\n"+paleotype;
-                    text = stext.substring(  stext.indexOf("Фотогалерея:") , stext.indexOf("Фотография")).trim().replace("   \t\t\t","");
+                    other_descr_data = place+"\n"+paleotime+"\n"+paleotype;
+                    text = get_ammonit_descr_text(stext ,"Фотогалерея:" ,"Фотография").replace("\t\t\t","").
+                            replace("  "," ").replace("\t"," ");
 
                 }
                 catch (Exception e)
@@ -261,19 +262,6 @@ public class ViewPaleoItem extends AppCompatActivity {
                     text = ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_TEXT);
                 }
 
-                /*try {
-                    String text2 = Utils.getTagValues(htmlcode , TAG_REGEX_descr2).get(0);
-                    if(text2.indexOf(text) > -1)
-                    {
-                        text = text2;
-                    }
-
-                }
-                catch (Exception e)
-                {
-
-                }*/
-                //">  <meta content="toltek,  Ammonit.ru, paleontological internet portal" name="author
                 text = text.replace(">  <meta content=\"" , "").replace(ViewPaleoItem.this.getIntent().getStringExtra(GalleryFragment.I_AUTHOR),"").
                         replace(",  Ammonit.ru, paleontological internet portal\" name=\"author" ,"");
 
@@ -454,6 +442,16 @@ public class ViewPaleoItem extends AppCompatActivity {
 
             super.onPostExecute(s);
         }
+    }
+
+    String get_ammonit_descr_text(String simple_text , String begin_word , String end_word )
+    {
+        int idx1=  simple_text.indexOf(begin_word) ;
+        int idx2=  simple_text.indexOf(end_word) ;
+        if(idx1!= -1 && idx2 !=-1)
+            return simple_text.substring( idx1 , idx2).trim();
+        else
+             return "";
     }
 
 }
