@@ -1,6 +1,7 @@
 package ru.astronomrus.paleomuseum;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,8 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -17,6 +20,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,6 +40,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import okhttp3.OkHttpClient;
@@ -45,13 +53,19 @@ public class ViewPaleoItem extends AppCompatActivity {
     LinearLayout buttons;
     LinearLayout content;
     ImageView loadimg;
+    Dialog dialog ;
+    String []comment_text  =  null;
     final Pattern TAG_REGEX_descr2 = Pattern.compile("<p style=\"text-align:left;\">"+"(.+?)"+"<");
+
+    final Pattern TAG_REGEX_comment_author = Pattern.compile("<span style=\"color:green;\">"+"(.+?)"+"</span></a></span>");
+    final Pattern TAG_REGEX_comment_text= Pattern.compile("<p style=\"text-align:left;\">"+"(.+?)"+"</p></div></td>");
     PhotoView mimgv;
     TextView mtv;
     Context ctx;
     db_BookMark db;
     String description="";
     String other_descr_data="";
+    ImageButton  comments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +82,7 @@ public class ViewPaleoItem extends AppCompatActivity {
         final ImageButton share = (ImageButton) findViewById(R.id.vp_share);
         final ImageButton download = (ImageButton) findViewById(R.id.vp_load);
         final ImageButton bookmark = (ImageButton) findViewById(R.id.vp_bookmark);
+        comments = (ImageButton) findViewById(R.id.vp_comment);
 
 
         db = new db_BookMark(ViewPaleoItem.this);
@@ -190,7 +205,12 @@ public class ViewPaleoItem extends AppCompatActivity {
                 }
             }
         });
-
+        comments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                show_list_comment(comment_text);
+            }
+        });
         if(db.if_exists(image)) bookmark.setImageResource(R.drawable.ic_bookmark);
         else
             bookmark.setImageResource(R.drawable.ic_bookmark_border);
@@ -230,6 +250,9 @@ public class ViewPaleoItem extends AppCompatActivity {
         String place="";
         String paleotype="";
         boolean is_reset= false;
+
+
+
         @Override
         protected Void doInBackground(String... strings) {
             //выполняем запрос и получаем ответ
@@ -244,10 +267,26 @@ public class ViewPaleoItem extends AppCompatActivity {
              // Log.d("RESPD" , resultd);
                 htmlcode = resultd;
 
+
                 htmlcode = htmlcode.replace("\n" ," ");
                 htmlcode = htmlcode.replace("\r" ," ");
                 htmlcode = htmlcode.replace("\n\r" ," ");
 
+                String comment_cut_htmlcode = htmlcode.substring(htmlcode.indexOf("Комментарии:"));
+                List<String> cm_aut = Utils.getTagValues(comment_cut_htmlcode , TAG_REGEX_comment_author);
+                List<String> cm_comm = Utils.getTagValues(comment_cut_htmlcode , TAG_REGEX_comment_text);
+                comment_text = new String[cm_comm.size()];
+                for(int i=0;i<cm_comm.size();i++)
+                {
+                    try {
+                        comment_text[i] = new String("["+cm_aut.get(i) + "]:" + cm_comm.get(i)+"\n\n");
+                        comment_text[i] =Utils.convert_to_simple_text(comment_text[i] );
+                    }
+                    catch(Exception exc)
+                    {
+
+                    }
+                }
                 try {
                     text = Utils.getTagValues(htmlcode, TAG_REGEX_descr).get(0);
 
@@ -290,6 +329,8 @@ public class ViewPaleoItem extends AppCompatActivity {
             super.onPostExecute(result);
 
 
+            if(comment_text !=null)
+                if(comment_text.length > 0)comments.setVisibility(View.VISIBLE);
            // List<String> lst_time = Utils.getTagValues(htmlcode , TAG_REGEX_item_time_descr);
           //  List<String> lst_authors = Utils.getTagValues(htmlcode , TAG_REGEX_item_authots);
            // String text = Utils.getTagValues(htmlcode , TAG_REGEX_descr).get(0);
@@ -305,6 +346,7 @@ public class ViewPaleoItem extends AppCompatActivity {
 
 
         buttons.startAnimation( AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.ll_hide) );
+
 
         }
     };
@@ -457,6 +499,51 @@ public class ViewPaleoItem extends AppCompatActivity {
             return simple_text.substring( idx1 , idx2).trim();
         else
              return "";
+    }
+
+    void show_list_comment(String []text) {
+        int req_pg = 1;
+        dialog = new Dialog(ViewPaleoItem.this);
+        dialog.setContentView(R.layout.dlg_list_comments);
+        dialog.setTitle("Комментарии");
+        dialog.show();
+        final TextView title = (TextView) dialog.findViewById(R.id.lcm_title);
+        title.setText("Комментарии");
+        final GridView listView = (GridView) dialog.findViewById(R.id.lcm_grid_tags);
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, text);
+
+        // Assign adapter to ListView
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+
+            }
+        });
+
+        Button ok = (Button) dialog.findViewById(R.id.lcm_ok);
+        Button cancel = (Button) dialog.findViewById(R.id.lcm_cancel);
+        cancel.setVisibility(View.INVISIBLE);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //  pnum = seek.getProgress();
+                // (new GalleryFragment.Imgitems_getter()).execute(url+pnum);
+                dialog.hide();
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
+            }
+        });
     }
 
 }
