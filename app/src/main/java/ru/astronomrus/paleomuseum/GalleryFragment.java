@@ -46,7 +46,7 @@ public class GalleryFragment extends Fragment {
     final public static String I_DESCR="idescr";
 
 
-    final Animation textAnimation = AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.alpha_up_text);
+     Animation textAnimation  ;
 
 
     int pnum =1;
@@ -75,6 +75,7 @@ public class GalleryFragment extends Fragment {
         {
             url = bundle.getString(BKEY_URL, url);
         }
+        textAnimation = AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.alpha_up_text);
 
         // Button tt = (Button) getView().findViewById(R.id.btnTimeTable);
         pb = (ProgressBar) getView().findViewById(R.id.fg_progressBar);

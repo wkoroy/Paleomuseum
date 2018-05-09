@@ -79,11 +79,16 @@ public class ViewPaleoItem extends AppCompatActivity {
         {
             e.printStackTrace();
         }
-        Picasso.with(this).load(getIntent().getStringExtra(GalleryFragment.I_IMG_LINK).replace("-sm" , "-big")).placeholder(R.drawable.imgloading).into(mimgv);
-        final Animation anim = AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.loadanim);
-        anim.setRepeatCount(-1);
-        loadimg.startAnimation(anim);
-
+        try {
+            Picasso.with(this).load(getIntent().getStringExtra(GalleryFragment.I_IMG_LINK).replace("-sm", "-big")).placeholder(R.drawable.imgloading).into(mimgv);
+             Animation anim = AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.loadanim);
+            anim.setRepeatCount(-1);
+            loadimg.startAnimation(anim);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
         String imglink = getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big");
         String [] nmtmp = imglink.split("/");
         final String flname = nmtmp[nmtmp.length -1];
