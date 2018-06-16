@@ -6,6 +6,11 @@
     <color name="colorBackground">#af874c</color>
     <color name="colorBgLight">#dcba87</color>
 
+    <color name="colorEnd">#7d322e</color>
+    <color name="colorTextBlack">#747474</color>
+    <color name="colorTextWhite">#ffffff</color>
+
+
 
 
 </resources>

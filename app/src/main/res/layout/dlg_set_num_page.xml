@@ -15,7 +15,7 @@
         android:layout_marginTop="5dp"
         android:text="Выберите номер страницы"
         android:textAlignment="center"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorTextWhite"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -52,7 +52,7 @@
             android:layout_weight="1"
             android:background="@color/colorBackground"
             android:text="Отмена"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/colorTextWhite" />
 
         <Button
             android:id="@+id/ps_ok"
@@ -65,7 +65,7 @@
             android:layout_weight="1"
             android:background="@color/colorBackground"
             android:text="Ok"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/colorTextWhite" />
     </LinearLayout>
 
 </LinearLayout>

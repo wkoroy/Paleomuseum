@@ -23,5 +23,6 @@
         android:layout_marginTop="1dp"
         android:layout_weight="1"
         android:text="Загрузка..."
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textColor="@color/colorTextBlack" />
 </LinearLayout>

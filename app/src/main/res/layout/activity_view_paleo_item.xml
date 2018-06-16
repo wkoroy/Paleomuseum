@@ -106,6 +106,7 @@
                 android:scrollbars="vertical"
                 android:text="TextView-------------"
                 android:textAlignment="center"
+                android:textColor="@color/colorTextBlack"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
