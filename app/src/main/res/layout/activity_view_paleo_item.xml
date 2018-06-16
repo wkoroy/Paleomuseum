@@ -87,7 +87,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:background="@android:drawable/picture_frame"
+                android:background="@color/colorTextWhite"
                 android:src="@android:drawable/stat_sys_download_done"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/imgloading"
