@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity
         int req_pg = 1;
            dialog = new Dialog(MainActivity.ctx);
         dialog.setContentView(R.layout.dlg_list_geochrones);
-        dialog.setTitle(" Место");
+        dialog.setTitle("");
         dialog.show();
         final TextView title = (TextView) dialog.findViewById(R.id.lgh_title);
         title.setText("Место");
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity
         int req_pg = 1;
            dialog = new Dialog(MainActivity.ctx);
         dialog.setContentView(R.layout.dlg_list_geochrones);
-        dialog.setTitle("Век / Ярус (Stage)");
+        dialog.setTitle("");
         dialog.show();
         final TextView title = (TextView) dialog.findViewById(R.id.lgh_title);
         title.setText("Век / Ярус (Stage)");
@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity
         int req_pg = 1;
            dialog = new Dialog(MainActivity.ctx);
         dialog.setContentView(R.layout.dlg_list_geochrones);
-        dialog.setTitle("Типы окаменелостей");
+        dialog.setTitle("");
         dialog.show();
         final TextView title = (TextView) dialog.findViewById(R.id.lgh_title);
         title.setText("Типы окаменелостей");

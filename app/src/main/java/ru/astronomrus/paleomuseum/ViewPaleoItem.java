@@ -158,7 +158,7 @@ public class ViewPaleoItem extends AppCompatActivity {
       }
 
 
-        buttons.startAnimation( AnimationUtils.loadAnimation(MainActivity.ctx, R.anim.ll_show) );
+        buttons.startAnimation( AnimationUtils.loadAnimation(this, R.anim.ll_show) );
         final  String image = getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big");;
 
 
@@ -505,7 +505,7 @@ public class ViewPaleoItem extends AppCompatActivity {
         int req_pg = 1;
         dialog = new Dialog(ViewPaleoItem.this);
         dialog.setContentView(R.layout.dlg_list_comments);
-        dialog.setTitle("Комментарии");
+        dialog.setTitle("");
         dialog.show();
         final TextView title = (TextView) dialog.findViewById(R.id.lcm_title);
         title.setText("Комментарии");
