@@ -24,6 +24,10 @@
             android:id="@+id/photo_by_bioclass"
             android:icon="@drawable/ic_filter"
             android:title="По типу окаменелостей" />
+        <item
+            android:id="@+id/photo_by_tag"
+            android:icon="@drawable/ic_filter"
+            android:title="По тегу" />
 
         <item
             android:id="@+id/articles"

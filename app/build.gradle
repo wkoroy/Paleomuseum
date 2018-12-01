@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "ru.astronomrus.paleomuseum"
         minSdkVersion 17
-        targetSdkVersion 25
-        versionCode 181
-        versionName "1.8.1"
+        targetSdkVersion 26
+        versionCode 182
+        versionName "1.8.2"
     }
     buildTypes {
         release {
