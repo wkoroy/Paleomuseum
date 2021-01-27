@@ -66,6 +66,7 @@ public class ViewPaleoItem extends AppCompatActivity {
     String description="";
     String other_descr_data="";
     ImageButton  comments;
+    String imglink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +105,7 @@ public class ViewPaleoItem extends AppCompatActivity {
         {
             e.printStackTrace();
         }
-        String imglink = getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big");
+        imglink = getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big");
         String [] nmtmp = imglink.split("/");
         final String flname = nmtmp[nmtmp.length -1];
         if( new File(getCacheDir(),flname).exists())
@@ -203,6 +204,8 @@ public class ViewPaleoItem extends AppCompatActivity {
 
                     }
                 }
+                else
+                    image_download(getIntent().getStringExtra(GalleryFragment.I_IMG_LINK ).replace("-sm" , "-big"));
             }
         });
         comments.setOnClickListener(new View.OnClickListener() {
@@ -370,16 +373,24 @@ public class ViewPaleoItem extends AppCompatActivity {
     }
 
     public static  void image_download(String imurl) {
-        File direct = new File(Environment.getExternalStorageDirectory()
-                + "/Download");
-        if (!direct.exists()) {
-            direct.mkdirs();
+
+        String folders[] ={"/Download","/Pictures" ,"/DCIM","/"};
+
+        String sel_dir="/";
+        for(String d:folders)
+        {
+            File direct = new File(Environment.getExternalStorageDirectory()
+                    + d);
+            if (!direct.exists()) {
+                direct.mkdirs();
+            }
+            sel_dir =  d;
+            if(direct.canWrite()) break;
         }
-        if(! direct.canWrite()) return;
+
 
         DownloadManager mgr = (DownloadManager) MainActivity.ctx.getSystemService(Context.DOWNLOAD_SERVICE);
 
-        Uri downloadUri = Uri.parse(imurl);
         DownloadManager.Request request = new DownloadManager.Request(
                 Uri.parse(imurl));
 
@@ -392,11 +403,11 @@ public class ViewPaleoItem extends AppCompatActivity {
                         | DownloadManager.Request.NETWORK_MOBILE)
                 .setAllowedOverRoaming(false).setTitle(MainActivity.ctx.getString(R.string.app_name))
                 .setDescription("Загрузка изображения ")
-                .setDestinationInExternalPublicDir("/Download",imgfname  ).setNotificationVisibility(View.VISIBLE);
+                .setDestinationInExternalPublicDir(sel_dir,imgfname  ).setNotificationVisibility(View.VISIBLE);
 
         mgr.enqueue(request);
         Toast toast = Toast.makeText(MainActivity.ctx,
-                "Изображение загружено в папку Download", Toast.LENGTH_SHORT);
+                "Изображение загружено в папку "+sel_dir, Toast.LENGTH_SHORT);
         toast.show();
     }
 
